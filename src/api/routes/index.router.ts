@@ -39,6 +39,7 @@ const router: Router = Router();
 const serverConfig = configService.get('SERVER');
 const databaseConfig = configService.get<Database>('DATABASE');
 const guards = [instanceExistsGuard, instanceLoggedGuard, authGuard['apikey']];
+const authOnly = [authGuard['apikey']];
 
 const telemetry = new Telemetry();
 
@@ -214,7 +215,8 @@ router
       facebookUserToken: facebookConfig.USER_TOKEN,
     });
   })
-  .use('/instance', new InstanceRouter(configService, ...guards).router)
+  // Apenas auth para criar/gerenciar instância sem exigir instância prévia
+  .use('/instance', new InstanceRouter(configService, ...authOnly).router)
   .use('/message', new MessageRouter(...guards).router)
   .use('/call', new CallRouter(...guards).router)
   .use('/chat', new ChatRouter(...guards).router)
