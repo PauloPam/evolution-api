@@ -36,6 +36,10 @@ export class SendMessageController {
   }
 
   public async sendText({ instanceName }: InstanceDto, data: SendTextDto) {
+    // DEBUG: Logs antes de processar (nota: req.body não está disponível aqui, apenas data já validado)
+    console.log('[DEBUG SENDTEXT] typeof req.body:', typeof data);
+    console.log('[DEBUG SENDTEXT] req.body raw:', data);
+
     return await this.waMonitor.waInstances[instanceName].textMessage(data);
   }
 

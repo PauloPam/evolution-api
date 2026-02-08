@@ -52,14 +52,20 @@ export class MessageRouter extends RouterBroker {
         return res.status(HttpStatus.CREATED).json(response);
       })
       .post(this.routerPath('sendText'), ...guards, async (req, res) => {
-        const response = await this.dataValidate<SendTextDto>({
-          request: req,
-          schema: textMessageSchema,
-          ClassRef: SendTextDto,
-          execute: (instance, data) => sendMessageController.sendText(instance, data),
-        });
-
-        return res.status(HttpStatus.CREATED).json(response);
+        try {
+          console.log('[SENDTEXT TEST] rota chamada, ignorando body. typeof req.body =', typeof req.body);
+          return res.status(HttpStatus.CREATED).json({
+            ok: true,
+            echoType: typeof req.body,
+          });
+        } catch (error) {
+          console.error('[SENDTEXT TEST] erro inesperado:', error);
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            status: 500,
+            error: 'Internal Server Error',
+            response: { message: String(error instanceof Error ? error.message : error) },
+          });
+        }
       })
       .post(this.routerPath('sendMedia'), ...guards, upload.single('file'), async (req, res) => {
         const bodyData = req.body;

@@ -29,6 +29,15 @@ export abstract class RouterBroker {
   public async dataValidate<T>(args: DataValidate<T>) {
     const { request, schema, ClassRef, execute } = args;
 
+    // DEBUG: Logs dentro do dataValidate
+    if (request.originalUrl.includes('/sendText')) {
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] ========================================');
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] typeof request.body:', typeof request.body);
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] request.body:', request.body);
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] request.body stringified:', JSON.stringify(request.body, null, 2));
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] Content-Type:', request.get('Content-Type'));
+    }
+
     const ref = new ClassRef();
     const body = request.body;
     const instance = request.params as unknown as InstanceDto;
@@ -41,9 +50,27 @@ export abstract class RouterBroker {
       Object.assign(instance, body);
     }
 
+    if (request.originalUrl.includes('/sendText')) {
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] body antes de Object.assign:', body);
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] ref antes de Object.assign:', ref);
+    }
+
     Object.assign(ref, body);
 
+    if (request.originalUrl.includes('/sendText')) {
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] ref depois de Object.assign:', ref);
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] schema:', schema ? 'presente' : 'ausente');
+    }
+
     const v = schema ? validate(ref, schema) : { valid: true, errors: [] };
+
+    if (request.originalUrl.includes('/sendText')) {
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] validação válida?', v.valid);
+      if (!v.valid) {
+        console.log('[DEBUG SENDTEXT][DATAVALIDATE] erros de validação:', v.errors);
+      }
+      console.log('[DEBUG SENDTEXT][DATAVALIDATE] ========================================');
+    }
 
     if (!v.valid) {
       const message: any[] = v.errors.map(({ stack, schema }) => {
