@@ -908,3 +908,15 @@ export class ConfigService {
 }
 
 export const configService = new ConfigService();
+
+// Debug da configuração de autenticação (executa apenas na carga deste módulo)
+try {
+  const authDebug = configService.get<Auth>('AUTHENTICATION');
+  // eslint-disable-next-line no-console
+  console.log('[DEBUG AUTH]', {
+    AUTHENTICATION_API_KEY: process.env.AUTHENTICATION_API_KEY,
+    loadedKey: authDebug.API_KEY.KEY,
+  });
+} catch {
+  // Evita quebrar o boot caso algo ainda não esteja pronto
+}
