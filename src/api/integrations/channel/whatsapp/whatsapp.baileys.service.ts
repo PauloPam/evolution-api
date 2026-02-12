@@ -1163,6 +1163,8 @@ export class BaileysStartupService extends ChannelStartupService {
             }
           }
 
+          console.log('[MSG_UPSERT_DEBUG] type =', type, 'edited =', !!editedMessage, 'hasMessage =', !!received?.message);
+
           if ((type !== 'notify' && type !== 'append') || editedMessage || !received?.message) {
             continue;
           }
@@ -1479,6 +1481,8 @@ export class BaileysStartupService extends ChannelStartupService {
             messageRaw.key.remoteJid = messageRaw.key.remoteJidAlt;
           }
           console.log(messageRaw);
+
+          console.log('[MSG_UPSERT_DEBUG] chamando sendDataWebhook MESSAGES_UPSERT para', this.instance.name);
 
           this.sendDataWebhook(Events.MESSAGES_UPSERT, messageRaw);
 

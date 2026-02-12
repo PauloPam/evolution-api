@@ -104,6 +104,9 @@ export class WebhookController extends EventController implements EventControlle
 
     if (local && instance?.enabled) {
       if (Array.isArray(webhookLocal) && webhookLocal.includes(we)) {
+        if (event === 'messages.upsert') {
+          console.log('[WEBHOOK_DEBUG] vai enviar MESSAGES_UPSERT para', instance?.url, 'events:', webhookLocal);
+        }
         let baseURL: string;
 
         if (instance?.webhookByEvents) {
